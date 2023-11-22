@@ -90,7 +90,7 @@ func parseTimestampMapWebVTT(line string) (timeOffset time.Duration, err error) 
 func ReadFromWebVTT(i io.Reader) (o *Subtitles, err error) {
 	// Init
 	o = NewSubtitles()
-	var scanner = bufio.NewScanner(i)
+	scanner := bufio.NewScanner(i)
 	var line string
 	var lineNum int
 
@@ -105,7 +105,7 @@ func ReadFromWebVTT(i io.Reader) (o *Subtitles, err error) {
 	}
 
 	// Scan
-	var item = &Item{}
+	item := &Item{}
 	var blockName string
 	var comments []string
 	var index int
@@ -135,10 +135,10 @@ func ReadFromWebVTT(i io.Reader) (o *Subtitles, err error) {
 		// Region
 		case strings.HasPrefix(line, "Region: "):
 			// Add region styles
-			var r = &Region{InlineStyle: &StyleAttributes{}}
+			r := &Region{InlineStyle: &StyleAttributes{}}
 			for _, part := range strings.Split(strings.TrimPrefix(line, "Region: "), " ") {
 				// Split on "="
-				var split = strings.Split(part, "=")
+				split := strings.Split(part, "=")
 				if len(split) <= 1 {
 					err = fmt.Errorf("astisub: line %d: Invalid region style %s", lineNum, part)
 					return
@@ -195,10 +195,10 @@ func ReadFromWebVTT(i io.Reader) (o *Subtitles, err error) {
 			index = 0
 
 			// Split line on time boundaries
-			var left = strings.Split(line, webvttTimeBoundariesSeparator)
+			left := strings.Split(line, webvttTimeBoundariesSeparator)
 
 			// Split line on space to get remaining of time data
-			var right = strings.Split(left[1], " ")
+			right := strings.Split(left[1], " ")
 
 			// Parse time boundaries
 			if item.StartAt, err = parseDurationWebVTT(left[0]); err != nil {
@@ -220,7 +220,7 @@ func ReadFromWebVTT(i io.Reader) (o *Subtitles, err error) {
 					}
 
 					// Split line on ":"
-					var split = strings.Split(right[index], ":")
+					split := strings.Split(right[index], ":")
 					if len(split) <= 1 {
 						err = fmt.Errorf("astisub: line %d: Invalid inline style '%s'", lineNum, right[index])
 						return
@@ -459,7 +459,7 @@ func (s Subtitles) WriteToWebVTT(o io.Writer) (err error) {
 	}
 
 	// Loop through subtitles
-	for index, item := range s.Items {
+	for _, item := range s.Items {
 		// Add comments
 		if len(item.Comments) > 0 {
 			c = append(c, []byte("NOTE ")...)
@@ -471,7 +471,7 @@ func (s Subtitles) WriteToWebVTT(o io.Writer) (err error) {
 		}
 
 		// Add time boundaries
-		c = append(c, []byte(strconv.Itoa(index+1))...)
+		c = append(c, []byte(strconv.Itoa(item.Index))...)
 		c = append(c, bytesLineSeparator...)
 		c = append(c, []byte(formatDurationWebVTT(item.StartAt))...)
 		c = append(c, bytesWebVTTTimeBoundariesSeparator...)
