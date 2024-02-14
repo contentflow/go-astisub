@@ -6,9 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/asticode/go-astisub"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/contentflow/go-astisub"
 )
 
 func TestWebVTT(t *testing.T) {

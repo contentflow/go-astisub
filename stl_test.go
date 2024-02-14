@@ -8,8 +8,9 @@ import (
 	"time"
 
 	"github.com/asticode/go-astikit"
-	"github.com/asticode/go-astisub"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/contentflow/go-astisub"
 )
 
 func TestSTL(t *testing.T) {
@@ -33,7 +34,8 @@ func TestSTL(t *testing.T) {
 		STLRevisionDate:                                     &revisionDate,
 		STLSubtitleListReferenceCode:                        "12345678",
 		STLCountryOfOrigin:                                  "FRA",
-		Title:                                               "Title test"},
+		Title:                                               "Title test",
+	},
 		s.Metadata)
 
 	// No subtitles to write
@@ -69,7 +71,8 @@ func TestOPNSTL(t *testing.T) {
 		STLPublisher:                                        "",
 		STLRevisionDate:                                     &revisionDate,
 		STLRevisionNumber:                                   1,
-		Title:                                               ""},
+		Title:                                               "",
+	},
 		s.Metadata)
 
 	// No subtitles to write

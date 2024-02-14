@@ -6,8 +6,9 @@ import (
 	"testing"
 
 	"github.com/asticode/go-astikit"
-	"github.com/asticode/go-astisub"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/contentflow/go-astisub"
 )
 
 func assertSSAStyle(t *testing.T, e, a astisub.Style) {

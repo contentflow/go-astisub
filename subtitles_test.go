@@ -4,13 +4,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/asticode/go-astisub"
+	"github.com/contentflow/go-astisub"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestLine_Text(t *testing.T) {
-	var l = astisub.Line{Items: []astisub.LineItem{{Text: "1"}, {Text: "2"}, {Text: "3"}}}
+	l := astisub.Line{Items: []astisub.LineItem{{Text: "1"}, {Text: "2"}, {Text: "3"}}}
 	assert.Equal(t, "1 2 3", l.String())
 }
 
@@ -45,7 +45,7 @@ func mockSubtitles() *astisub.Subtitles {
 }
 
 func TestSubtitles_Add(t *testing.T) {
-	var s = mockSubtitles()
+	s := mockSubtitles()
 	s.Add(time.Second)
 	assert.Len(t, s.Items, 2)
 	assert.Equal(t, 2*time.Second, s.Items[0].StartAt)
@@ -72,7 +72,7 @@ func TestSubtitles_IsEmpty(t *testing.T) {
 }
 
 func TestSubtitles_ForceDuration(t *testing.T) {
-	var s = mockSubtitles()
+	s := mockSubtitles()
 	s.ForceDuration(10*time.Second, false)
 	assert.Len(t, s.Items, 2)
 	s = mockSubtitles()
@@ -91,7 +91,7 @@ func TestSubtitles_ForceDuration(t *testing.T) {
 
 func TestSubtitles_Fragment(t *testing.T) {
 	// Init
-	var s = mockSubtitles()
+	s := mockSubtitles()
 
 	// Fragment
 	s.Fragment(2 * time.Second)
@@ -194,8 +194,8 @@ func TestSubtitles_Unfragment(t *testing.T) {
 }
 
 func TestSubtitles_Merge(t *testing.T) {
-	var s1 = &astisub.Subtitles{Items: []*astisub.Item{{EndAt: 3 * time.Second, StartAt: time.Second}, {EndAt: 8 * time.Second, StartAt: 5 * time.Second}, {EndAt: 12 * time.Second, StartAt: 10 * time.Second}}, Regions: map[string]*astisub.Region{"region_0": {ID: "region_0"}, "region_1": {ID: "region_1"}}, Styles: map[string]*astisub.Style{"style_0": {ID: "style_0"}, "style_1": {ID: "style_1"}}}
-	var s2 = &astisub.Subtitles{Items: []*astisub.Item{{EndAt: 4 * time.Second, StartAt: 2 * time.Second}, {EndAt: 7 * time.Second, StartAt: 6 * time.Second}, {EndAt: 11 * time.Second, StartAt: 9 * time.Second}, {EndAt: 14 * time.Second, StartAt: 13 * time.Second}}, Regions: map[string]*astisub.Region{"region_1": {ID: "region_1"}, "region_2": {ID: "region_2"}}, Styles: map[string]*astisub.Style{"style_1": {ID: "style_1"}, "style_2": {ID: "style_2"}}}
+	s1 := &astisub.Subtitles{Items: []*astisub.Item{{EndAt: 3 * time.Second, StartAt: time.Second}, {EndAt: 8 * time.Second, StartAt: 5 * time.Second}, {EndAt: 12 * time.Second, StartAt: 10 * time.Second}}, Regions: map[string]*astisub.Region{"region_0": {ID: "region_0"}, "region_1": {ID: "region_1"}}, Styles: map[string]*astisub.Style{"style_0": {ID: "style_0"}, "style_1": {ID: "style_1"}}}
+	s2 := &astisub.Subtitles{Items: []*astisub.Item{{EndAt: 4 * time.Second, StartAt: 2 * time.Second}, {EndAt: 7 * time.Second, StartAt: 6 * time.Second}, {EndAt: 11 * time.Second, StartAt: 9 * time.Second}, {EndAt: 14 * time.Second, StartAt: 13 * time.Second}}, Regions: map[string]*astisub.Region{"region_1": {ID: "region_1"}, "region_2": {ID: "region_2"}}, Styles: map[string]*astisub.Style{"style_1": {ID: "style_1"}, "style_2": {ID: "style_2"}}}
 	s1.Merge(s2)
 	assert.Len(t, s1.Items, 7)
 	assert.Equal(t, &astisub.Item{EndAt: 3 * time.Second, StartAt: time.Second}, s1.Items[0])
@@ -210,7 +210,7 @@ func TestSubtitles_Merge(t *testing.T) {
 }
 
 func TestSubtitles_Optimize(t *testing.T) {
-	var s = &astisub.Subtitles{
+	s := &astisub.Subtitles{
 		Items: []*astisub.Item{
 			{Region: &astisub.Region{ID: "1"}},
 			{Style: &astisub.Style{ID: "1"}},
@@ -234,7 +234,7 @@ func TestSubtitles_Optimize(t *testing.T) {
 }
 
 func TestSubtitles_Order(t *testing.T) {
-	var s = &astisub.Subtitles{Items: []*astisub.Item{{StartAt: 4 * time.Second, EndAt: 5 * time.Second}, {StartAt: 2 * time.Second, EndAt: 3 * time.Second}, {StartAt: 3 * time.Second, EndAt: 4 * time.Second}, {StartAt: time.Second, EndAt: 2 * time.Second}}}
+	s := &astisub.Subtitles{Items: []*astisub.Item{{StartAt: 4 * time.Second, EndAt: 5 * time.Second}, {StartAt: 2 * time.Second, EndAt: 3 * time.Second}, {StartAt: 3 * time.Second, EndAt: 4 * time.Second}, {StartAt: time.Second, EndAt: 2 * time.Second}}}
 	s.Order()
 	assert.Equal(t, time.Second, s.Items[0].StartAt)
 	assert.Equal(t, 2*time.Second, s.Items[0].EndAt)

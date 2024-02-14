@@ -2,12 +2,14 @@ package astisub_test
 
 import (
 	"bytes"
-	"github.com/asticode/go-astikit"
 	"io/ioutil"
 	"testing"
 
-	"github.com/asticode/go-astisub"
+	"github.com/asticode/go-astikit"
+
 	"github.com/stretchr/testify/assert"
+
+	"github.com/contentflow/go-astisub"
 )
 
 func TestTTML(t *testing.T) {
