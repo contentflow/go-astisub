@@ -318,16 +318,16 @@ func (sa *StyleAttributes) propagateTTMLAttributes() {
 		sa.WebVTTAlign = *sa.TTMLTextAlign
 	}
 	if sa.TTMLExtent != nil {
-		//region settings
-		lineHeight := 5 //assuming height of line as 5.33vh
+		// region settings
+		lineHeight := 5 // assuming height of line as 5.33vh
 		dimensions := strings.Split(*sa.TTMLExtent, " ")
 		if len(dimensions) > 1 {
 			sa.WebVTTWidth = dimensions[0]
 			if height, err := strconv.Atoi(strings.ReplaceAll(dimensions[1], "%", "")); err == nil {
 				sa.WebVTTLines = height / lineHeight
 			}
-			//cue settings
-			//default TTML WritingMode is lrtb i.e. left to right, top to bottom
+			// cue settings
+			// default TTML WritingMode is lrtb i.e. left to right, top to bottom
 			sa.WebVTTSize = dimensions[1]
 			if sa.TTMLWritingMode != nil && strings.HasPrefix(*sa.TTMLWritingMode, "tb") {
 				sa.WebVTTSize = dimensions[0]
@@ -335,11 +335,11 @@ func (sa *StyleAttributes) propagateTTMLAttributes() {
 		}
 	}
 	if sa.TTMLOrigin != nil {
-		//region settings
+		// region settings
 		sa.WebVTTRegionAnchor = "0%,0%"
 		sa.WebVTTViewportAnchor = strings.ReplaceAll(strings.TrimSpace(*sa.TTMLOrigin), " ", ",")
 		sa.WebVTTScroll = "up"
-		//cue settings
+		// cue settings
 		coordinates := strings.Split(*sa.TTMLOrigin, " ")
 		if len(coordinates) > 1 {
 			sa.WebVTTLine = coordinates[0]
@@ -390,6 +390,7 @@ type Metadata struct {
 	STLTranslatedProgramTitle                           string
 	STLTranslatorContactDetails                         string
 	STLTranslatorName                                   string
+	TimeOffset                                          time.Duration
 	Title                                               string
 	TTMLCopyright                                       string
 }
@@ -464,7 +465,7 @@ func (s *Subtitles) ForceDuration(d time.Duration, addDummyItem bool) {
 	// Requested duration is bigger than subtitles'one
 	if s.Duration() > d {
 		// Find last item before input duration and update end at
-		var lastIndex = -1
+		lastIndex := -1
 		for index, i := range s.Items {
 			// Start at is bigger than input duration, we've found the last item
 			if i.StartAt >= d {
@@ -495,7 +496,7 @@ func (s *Subtitles) Fragment(f time.Duration) {
 	}
 
 	// Here we want to simulate fragments of duration f until there are no subtitles left in that period of time
-	var fragmentStartAt, fragmentEndAt = time.Duration(0), f
+	fragmentStartAt, fragmentEndAt := time.Duration(0), f
 	for fragmentStartAt < s.Items[len(s.Items)-1].EndAt {
 		// We loop through subtitles and process the ones that either contain the fragment start at,
 		// or contain the fragment end at
@@ -506,7 +507,7 @@ func (s *Subtitles) Fragment(f time.Duration) {
 		//   fragment start at        fragment end at
 		for i, sub := range s.Items {
 			// Init
-			var newSub = &Item{}
+			newSub := &Item{}
 			*newSub = *sub
 
 			// A switch is more readable here
@@ -582,7 +583,7 @@ func (s *Subtitles) Optimize() {
 // removeUnusedRegionsAndStyles removes unused regions and styles
 func (s *Subtitles) removeUnusedRegionsAndStyles() {
 	// Loop through items
-	var usedRegions, usedStyles = make(map[string]bool), make(map[string]bool)
+	usedRegions, usedStyles := make(map[string]bool), make(map[string]bool)
 	for _, item := range s.Items {
 		// Add region
 		if item.Region != nil {
@@ -727,7 +728,7 @@ func (s Subtitles) Write(dst string) (err error) {
 // parseDuration parses a duration in "00:00:00.000", "00:00:00,000" or "0:00:00:00" format
 func parseDuration(i, millisecondSep string, numberOfMillisecondDigits int) (o time.Duration, err error) {
 	// Split milliseconds
-	var parts = strings.Split(i, millisecondSep)
+	parts := strings.Split(i, millisecondSep)
 	var milliseconds int
 	var s string
 	if len(parts) >= 2 {
@@ -798,15 +799,15 @@ func parseDuration(i, millisecondSep string, numberOfMillisecondDigits int) (o t
 // formatDuration formats a duration
 func formatDuration(i time.Duration, millisecondSep string, numberOfMillisecondDigits int) (s string) {
 	// Parse hours
-	var hours = int(i / time.Hour)
-	var n = i % time.Hour
+	hours := int(i / time.Hour)
+	n := i % time.Hour
 	if hours < 10 {
 		s += "0"
 	}
 	s += strconv.Itoa(hours) + ":"
 
 	// Parse minutes
-	var minutes = int(n / time.Minute)
+	minutes := int(n / time.Minute)
 	n = i % time.Minute
 	if minutes < 10 {
 		s += "0"
@@ -814,7 +815,7 @@ func formatDuration(i time.Duration, millisecondSep string, numberOfMillisecondD
 	s += strconv.Itoa(minutes) + ":"
 
 	// Parse seconds
-	var seconds = int(n / time.Second)
+	seconds := int(n / time.Second)
 	n = i % time.Second
 	if seconds < 10 {
 		s += "0"
@@ -822,7 +823,7 @@ func formatDuration(i time.Duration, millisecondSep string, numberOfMillisecondD
 	s += strconv.Itoa(seconds) + millisecondSep
 
 	// Parse milliseconds
-	var milliseconds = float64(n/time.Millisecond) / float64(1000)
+	milliseconds := float64(n/time.Millisecond) / float64(1000)
 	s += fmt.Sprintf("%."+strconv.Itoa(numberOfMillisecondDigits)+"f", milliseconds)[2:]
 	return
 }

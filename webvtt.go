@@ -288,6 +288,7 @@ func ReadFromWebVTT(i io.Reader) (o *Subtitles, err error) {
 	}
 
 	if timeOffset > 0 {
+		o.Metadata.TimeOffset = timeOffset
 		o.Add(timeOffset)
 	}
 	return
@@ -395,7 +396,13 @@ func (s Subtitles) WriteToWebVTT(o io.Writer) (err error) {
 
 	// Add header
 	var c []byte
-	c = append(c, []byte("WEBVTT\n\n")...)
+	c = append(c, []byte("WEBVTT\n")...)
+
+	if s.Metadata != nil && s.Metadata.TimeOffset > 0 {
+		c = append(c, []byte(fmt.Sprintf("%s=MPEGTS:%d,LOCAL:00:00:00.000\n\n", webvttTimestampMap, s.Metadata.TimeOffset/time.Second*90000))...)
+	} else {
+		c = append(c, []byte("\n")...)
+	}
 
 	var style []string
 	for _, s := range s.Styles {
