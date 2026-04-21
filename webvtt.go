@@ -288,6 +288,9 @@ func ReadFromWebVTT(i io.Reader) (o *Subtitles, err error) {
 	}
 
 	if timeOffset > 0 {
+		if o.Metadata == nil {
+			o.Metadata = &Metadata{}
+		}
 		o.Metadata.TimeOffset = timeOffset
 		o.Add(timeOffset)
 	}
